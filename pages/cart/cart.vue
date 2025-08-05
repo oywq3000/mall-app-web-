@@ -98,11 +98,19 @@
 					return;
 				}
 				fetchCartList().then(response => {
+					console.log('原始响应数据:', response.data);
+					console.log('id类型:', typeof response.data[0].id);
+					
 					let list = response.data;
 					let cartList = list.map(item => {
 						item.checked = true;
 						item.loaded = "loaded";
-						let spDataArr = JSON.parse(item.productAttr);
+						let spDataArr = [];
+try {
+  spDataArr = JSON.parse(item.productAttr);
+} catch (e) {
+  console.error('解析productAttr失败:', e, '数据:', item.productAttr);
+}
 						let spDataStr = '';
 						for (let attr of spDataArr) {
 							spDataStr += attr.key;
@@ -110,7 +118,8 @@
 							spDataStr += attr.value;
 							spDataStr += ";";
 						}
-						item.spDataStr = spDataStr;
+						item.spDataStr = spDataStr || '属性解析失败';
+console.log('生成的spDataStr:', item.spDataStr);
 						return item;
 					});
 					this.cartList = cartList;

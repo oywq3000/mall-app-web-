@@ -1,10 +1,13 @@
 import Request from '@/js_sdk/luch-request/request.js'
 import { API_BASE_URL} from '@/utils/appConfig.js';
+import JSONbig from 'json-bigint'
 
 const http = new Request()
 
 http.setConfig((config) => { /* 设置全局配置 */
 	config.baseUrl = API_BASE_URL /* 根域名不同 */
+	//添加自定义transformResponse
+	// 处理大数字	
 	config.header = {
 		...config.header
 	}
@@ -37,11 +40,13 @@ http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
 	  cancel('token 不存在') // 接收一个参数，会传给catch((err) => {}) err.errMsg === 'token 不存在'
 	}
 	*/
+
 	return config
 })
 
 http.interceptor.response((response) => { /* 请求之后拦截器 */
 	const res = response.data;
+	console.log("接收数据："+response.data)
 	if (res.code !== 200) {
 		//提示错误信息
 		uni.showToast({
