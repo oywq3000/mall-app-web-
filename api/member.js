@@ -17,3 +17,11 @@ export function memberInfo() {
 		url: '/sso/info'
 	})
 }
+
+export function updateMemberInfo(data){
+	return request({
+		method: 'POST',
+		url: '/sso/updateInfo',
+		data: data
+	})
+}

@@ -70,6 +70,7 @@
 					uni.setStorageSync('token',token);
 					uni.setStorageSync('username',this.username);
 					uni.setStorageSync('password',this.password);
+					
 					memberInfo().then(response=>{
 						this.login(response.data);
 						uni.navigateBack();

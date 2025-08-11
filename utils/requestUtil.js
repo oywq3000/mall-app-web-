@@ -46,7 +46,7 @@ http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
 
 http.interceptor.response((response) => { /* 请求之后拦截器 */
 	const res = response.data;
-	console.log("接收数据："+response.data)
+	console.log("接收数据：",response.data)
 	if (res.code !== 200) {
 		//提示错误信息
 		uni.showToast({

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {updateMemberInfo,memberInfo} from '@/api/member.js'; 
 
 Vue.use(Vuex)
 
@@ -13,11 +14,11 @@ const store = new Vuex.Store({
 
 			state.hasLogin = true;
 			state.userInfo = provider;
+			console.log("m_login:",provider)
 			uni.setStorage({//缓存用户登陆状态
 			    key: 'userInfo',  
 			    data: provider  
 			}) 
-			console.log(state.userInfo);
 		},
 		logout(state) {
 			state.hasLogin = false;
@@ -28,10 +29,26 @@ const store = new Vuex.Store({
 			uni.removeStorage({
 			    key: 'token'  
 			})
+		},
+		updateUserInfo(state, userInfo) {
+			state.userInfo = { ...state.userInfo, ...userInfo };
+			uni.setStorage({//缓存用户登陆状态
+			    key: 'userInfo',  
+			    data: state.userInfo  
+			}) 
 		}
 	},
 	actions: {
-	
+	   async updateMemberInfoAction({commit},userData){
+		   try{
+			   const response =  await updateMemberInfo(userData);
+			   const infoResponse = await memberInfo();
+			   commit("updateUserInfo",infoResponse.data)
+		   }catch(error){
+			   console.log("更新失败");
+			   throw error;
+		   }
+	   }
 	}
 })
 
