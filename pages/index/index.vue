@@ -309,14 +309,18 @@ export default {
 		//商品详情页
 		navToDetailPage(item) {
 			let id = item.id;
+			console.log(item)
 			uni.navigateTo({
 				url: `/pages/product/product?id=${id}`
 			})
 		},
 		//广告详情页
 		navToAdvertisePage(item) {
-			let id = item.id;
+			let toUrl = item.url;
 			console.log("navToAdvertisePage", item)
+			uni.navigateTo({
+				url: toUrl
+			})
 		},
 		//品牌详情页
 		navToBrandDetailPage(item) {
