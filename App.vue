@@ -7,7 +7,7 @@
 	} from 'vuex';
 	export default {
 		methods: {
-			...mapMutations(['login'])
+			...mapMutations('userInfo',['login'])
 		},
 		onLaunch: function() {
 			let userInfo = uni.getStorageSync('userInfo') || '';

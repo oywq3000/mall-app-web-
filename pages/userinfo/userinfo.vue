@@ -63,10 +63,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(['userInfo']),
+    ...mapState('userInfo',['userInfo']),
   },
   methods: {
-    ...mapMutations(['updateUserInfo']),
+    ...mapMutations('userInfo',['updateUserInfo']),
 
     // 编辑字段
     editField(field) {

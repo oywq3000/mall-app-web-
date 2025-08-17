@@ -47,7 +47,7 @@
 			};
 		},
 		methods:{
-			...mapMutations(['logout']),
+			...mapMutations('userInfo',['logout']),
 
 			navTo(url){
 				if(url.indexOf("pages")!=-1){

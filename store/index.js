@@ -1,54 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {updateMemberInfo,memberInfo} from '@/api/member.js'; 
+import pageStack from './modules/pageStack'
+import userInfo from './modules/userInfo'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-	state: {
-		hasLogin: false,
-		userInfo: {},
-	},
-	mutations: {
-		login(state, provider) {
-
-			state.hasLogin = true;
-			state.userInfo = provider;
-			console.log("m_login:",provider)
-			uni.setStorage({//缓存用户登陆状态
-			    key: 'userInfo',  
-			    data: provider  
-			}) 
-		},
-		logout(state) {
-			state.hasLogin = false;
-			state.userInfo = {};
-			uni.removeStorage({  
-                key: 'userInfo'  
-            });
-			uni.removeStorage({
-			    key: 'token'  
-			})
-		},
-		updateUserInfo(state, userInfo) {
-			state.userInfo = { ...state.userInfo, ...userInfo };
-			uni.setStorage({//缓存用户登陆状态
-			    key: 'userInfo',  
-			    data: state.userInfo  
-			}) 
-		}
-	},
-	actions: {
-	   async updateMemberInfoAction({commit},userData){
-		   try{
-			   const response =  await updateMemberInfo(userData);
-			   const infoResponse = await memberInfo();
-			   commit("updateUserInfo",infoResponse.data)
-		   }catch(error){
-			   console.log("更新失败");
-			   throw error;
-		   }
-	   }
+	modules: {
+	    userInfo,
+	    pageStack
 	}
 })
 

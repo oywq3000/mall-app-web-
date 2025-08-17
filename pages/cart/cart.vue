@@ -89,7 +89,7 @@
 			}
 		},
 		computed: {
-			...mapState(['hasLogin'])
+			...mapState('userInfo',['hasLogin'])
 		},
 		methods: {
 			//请求数据

@@ -305,7 +305,7 @@ export default {
 		this.loadData(id);
 	},
 	computed: {
-		...mapState(['hasLogin'])
+		...mapState('userInfo',['hasLogin'])
 	},
 	filters: {
 		formatDateTime(time) {

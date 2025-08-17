@@ -87,7 +87,7 @@
 			this.loadData('refresh');
 		},
 		computed: {
-			...mapState(['hasLogin'])
+			...mapState('userInfo',['hasLogin'])
 		},
 		methods: {
 			imageOnLoad(key, index) {
