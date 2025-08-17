@@ -41,6 +41,12 @@
 			}
 		},
 		{
+			"path": "pages/subjest/subject",
+			"style": {
+				"navigationBarTitleText": "专题"
+			}
+		},
+		{
 			"path": "pages/product/product",
 			"style": {
 				"navigationBarTitleText": "详情展示",
@@ -120,7 +126,7 @@
 								"fontSize": "28",
 								"color": "#303133",
 								"background": "rgba(0,0,0,0)",
-								"redDot": true
+								"redDot": false
 							}
 						]
 					}

@@ -43,19 +43,19 @@
 		</view>
 		<!-- 头部功能区 -->
 		<view class="cate-section">
-			<view class="cate-item">
+			<view class="cate-item" @click="navToSubjestPage()">
 				<image src="/static/temp/c3.png"></image>
 				<text>专题</text>
 			</view>
-			<view class="cate-item">
+			<view class="cate-item" @click="navToSubjestPage()">
 				<image src="/static/temp/c5.png"></image>
 				<text>话题</text>
 			</view>
-			<view class="cate-item">
+			<view class="cate-item" @click="navToSubjestPage()">
 				<image src="/static/temp/c6.png"></image>
 				<text>优选</text>
 			</view>
-			<view class="cate-item">
+			<view class="cate-item" @click="navToSubjestPage()">
 				<image src="/static/temp/c7.png"></image>
 				<text>特惠</text>
 			</view>
@@ -358,6 +358,11 @@ export default {
 		navToNoticePage() {
 			uni.navigateTo({
 				url: '/pages/notice/notice'
+			})
+		},
+		navToSubjestPage(){
+			uni.navigateTo({
+				url: '/pages/subjest/subject'
 			})
 		}
 

@@ -186,7 +186,16 @@ export default {
 			 console.log(response.data)
 			 this.searchHistory = response.data;
 		})
-	}
+	},
+	navToDetailPage(item){
+		//商品详情页
+		let id = item.id;
+		console.log(item)
+		uni.navigateTo({
+			url: `/pages/product/product?id=${id}`
+		})
+	},
+	
   },
   //下拉刷新
   onPullDownRefresh() {
