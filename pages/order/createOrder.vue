@@ -126,7 +126,9 @@
 <script>
 	import {
 		generateConfirmOrder,
-		generateOrder
+		generateConfirmOrderByPorduct,
+		generateOrder,
+		generateOrderByProduct
 	} from '@/api/order.js';
 	import {
 		formatDate
@@ -146,14 +148,31 @@
 				useIntegration: 0,
 				integrationConsumeSetting: {},
 				memberIntegration: 0,
-				cartIds: []
+				cartIds: [],
+				mode: 0 //0->购物车结算订单，1->单个商品结算模块
 			}
 		},
 		onLoad(option) {
-			//商品数据
-			this.cartIds = JSON.parse(option.cartIds);
-			console.log(this.cartIds);
-			this.loadData();
+			
+			if(option.cartIds!=null){
+				this.mode = 0; //启用购物出结算模式
+				
+				//商品数据,购物车结算
+				this.cartIds = JSON.parse(option.cartIds);
+				console.log(this.cartIds);
+				this.loadData();
+			}else{
+				this.mode = 1; //启用单个商品结算模式
+				
+				//直接购买
+				// 接收页面
+				const productDto = uni.getStorageSync('tempProductDto');
+				uni.removeStorageSync('tempProductDto'); // 使用后清除
+				console.log(productDto);
+				this.productDto = productDto;
+				this.loadDataByProduct(productDto);
+			}
+			
 		},
 		filters: {
 			formatProductAttr(jsonAttr) {
@@ -201,6 +220,21 @@
 					this.memberIntegration = response.data.memberIntegration;
 				});
 			},
+			async loadDataByProduct(productDto){
+				generateConfirmOrderByPorduct(productDto).then(response => {
+					this.memberReceiveAddressList = response.data.memberReceiveAddressList;
+					this.currentAddress = this.getDefaultAddress();
+					this.cartPromotionItemList = response.data.cartPromotionItemList;
+					this.couponList = [];
+					for (let item of response.data.couponHistoryDetailList) {
+						this.couponList.push(item.coupon);
+					}
+					this.calcAmount = response.data.calcAmount;
+					this.integrationConsumeSetting = response.data.integrationConsumeSetting;
+					this.memberIntegration = response.data.memberIntegration;
+				});
+			}
+			,
 			//显示优惠券面板
 			toggleMask(type) {
 				let timer = type === 'show' ? 10 : 300;
@@ -217,6 +251,13 @@
 				this.payType = type;
 			},
 			submit() {
+				if(this.mode==0){
+					this.submitByCarts();
+				}else if(this.mode==1){
+					this.submitByProduct();
+				}
+			},
+			submitByCarts(){
 				let orderParam = {
 					payType: 0,
 					couponId: null,
@@ -228,6 +269,41 @@
 					orderParam.couponId = this.currCoupon.id;
 				}
 				generateOrder(orderParam).then(response => {
+					let orderId = response.data.order.id;
+					uni.showModal({
+						title: '提示',
+						content: '订单创建成功，是否要立即支付？',
+						confirmText:'去支付',
+						cancelText:'取消',
+						success: function(res) {
+							if (res.confirm) {
+								uni.redirectTo({
+									url: `/pages/money/pay?orderId=${orderId}`
+								})
+							} else if (res.cancel) {
+								console.log("cancel")
+								uni.redirectTo({
+									url: '/pages/order/order?state=0'
+								})
+							}
+						}
+					});
+				});
+			},
+			submitByProduct(){
+				let orderByProductParam = {
+					payType: 0,
+					couponId: null,
+					cartIds:this.cartIds,
+					memberReceiveAddressId:this.currentAddress.id,
+					useIntegration:this.useIntegration,
+					productDto: this.productDto
+				}
+				
+				if(this.currCoupon!=null){
+					orderByProductParam.couponId = this.currCoupon.id;
+				}
+				generateOrderByProduct(orderByProductParam).then(response => {
 					let orderId = response.data.order.id;
 					uni.showModal({
 						title: '提示',

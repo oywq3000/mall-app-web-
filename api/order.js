@@ -7,11 +7,27 @@ export function generateConfirmOrder(data) {
 		data: data
 	})
 }
+export function generateConfirmOrderByPorduct(data){
+	return request({
+		method: 'POST',
+		url: '/order/generateConfirmOrderByProduct',
+		data: data
+	})
+}
+
 
 export function generateOrder(data) {
 	return request({
 		method: 'POST',
 		url: '/order/generateOrder',
+		data: data
+	})
+}
+
+export function generateOrderByProduct(data) {
+	return request({
+		method: 'POST',
+		url: '/order/generateOrderByProduct',
 		data: data
 	})
 }
