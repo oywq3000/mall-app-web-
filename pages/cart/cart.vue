@@ -99,6 +99,11 @@
 				}
 				fetchCartList().then(response => {
 					console.log('原始响应数据:', response.data);
+					if(response.data.length<1){
+						this.empty=true;
+					}
+					
+					//购物车内不为空
 					console.log('id类型:', typeof response.data[0].id);
 					
 					let list = response.data;
