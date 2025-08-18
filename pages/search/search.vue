@@ -62,7 +62,7 @@
           </view>
         </view>
       </view>
-	  <uni-load-more :status="loadingType"></uni-load-more>
+      <uni-load-more :status="loadingType"></uni-load-more>
     </view>
   </view>
 </template>
@@ -103,9 +103,10 @@ export default {
       ],
       currentSortIndex: 0,
       currentSort: 'relevance',
-	  loadingType:''
+      loadingType: ''
     }
   },
+
   methods: {
     // 确认搜索（点击键盘“搜索”或按钮）
     handleSearch() {
@@ -113,23 +114,23 @@ export default {
       // 1. 调用搜索逻辑（如接口请求）
       // 2. 记录搜索历史
       this.addToHistory(this.searchValue);
-	  //设置pagenNum为1
-	  this.searchParms.pageNum=1;
+      //设置pagenNum为1
+      this.searchParms.pageNum = 1;
       this.searchParms.keyword = this.searchValue;
       // 3. 跳转结果页或处理搜索逻辑
       searchProducts(this.searchParms).then(response => {
         console.log(response);
         this.productList = response.data.list;
-		uni.stopPullDownRefresh();
+        uni.stopPullDownRefresh();
       });
-      
+
       this.displayTyep = '2'
     },
-	handleSortChange(index){
-	   this.currentSortIndex = index;
-	   this.searchParms.sort = index;
-	   this.handleSearch();
-	},
+    handleSortChange(index) {
+      this.currentSortIndex = index;
+      this.searchParms.sort = index;
+      this.handleSearch();
+    },
     // 输入时触发（可选，如做实时搜索）
     handleInput(e) {
       this.searchValue = e.detail.value;
@@ -161,77 +162,88 @@ export default {
     },
     // 删除单条历史
     handleDeleteHistory(id) {
-      deleteHistory({ids:id}).then(response=>{
-		  this.handleSearchHistory();
-	  })
+      deleteHistory({ ids: id }).then(response => {
+        this.handleSearchHistory();
+      })
     },
     // 清除全部历史
     clearHistory() {
-	  const idList = this.searchHistory.map(item => item.id);
-	  deleteHistory({ids:idList}).then(response=>{
-		  this.handleSearchHistory();
-	  })
+      const idList = this.searchHistory.map(item => item.id);
+      deleteHistory({ ids: idList }).then(response => {
+        this.handleSearchHistory();
+      })
     },
     onClickBack() {
-      uni.navigateBack({
-        delta: 1 // 返回上一页
-      });
+      const pages = getCurrentPages();
+      console.log(pages.length);
+      // 判断是否有上一页
+      if (pages.length > 1) {
+        // 直接返回上一页
+        uni.navigateBack({
+          delta: 1
+        });
+      } else {
+        console.log("No previous page");
+        // 页面栈为空时返回主页
+        uni.switchTab({
+          url: `/pages/index/index`
+        });
+      }
+
     },
     onSearchInputConfirmed() {
       console.log("search:" + this.searchValue)
       this.handleSearch();
     },
-	handleSearchHistory(){
-		searchHistorys().then(response=>{
-			 console.log(response.data)
-			 this.searchHistory = response.data;
-		})
-	},
-	navToDetailPage(item){
-		//商品详情页
-		let id = item.id;
-		console.log(item)
-		uni.navigateTo({
-			url: `/pages/product/product?id=${id}`
-		})
-	},
-	
+    handleSearchHistory() {
+      searchHistorys().then(response => {
+        console.log(response.data)
+        this.searchHistory = response.data;
+      })
+    },
+    navToDetailPage(item) {
+      //商品详情页
+      let id = item.id;
+      console.log(item)
+      uni.navigateTo({
+        url: `/pages/product/product?id=${id}`
+      })
+    },
+
   },
   //下拉刷新
   onPullDownRefresh() {
-  	this.searchParms.pageNum = 1;
-  	this.handleSearch();
+    this.searchParms.pageNum = 1;
+    this.handleSearch();
   },
   //加载更多
   onReachBottom() {
-  	this.searchParms.pageNum++;
-  	this.loadingType = 'loading';
-  	searchProducts(this.searchParms).then(response => {
-  		let addProductList = response.data.list;
-  		if (addProductList.length === 0) {
-  			//没有更多了
-  			this.searchParms.pageNum--;
-  			this.loadingType = 'nomore';
-  		} else {
-  			this.productList = this.productList.concat(addProductList);
-  			this.loadingType = 'more';
-  		}
-  	})
+    this.searchParms.pageNum++;
+    this.loadingType = 'loading';
+    searchProducts(this.searchParms).then(response => {
+      let addProductList = response.data.list;
+      if (addProductList.length === 0) {
+        //没有更多了
+        this.searchParms.pageNum--;
+        this.loadingType = 'nomore';
+      } else {
+        this.productList = this.productList.concat(addProductList);
+        this.loadingType = 'more';
+      }
+    })
   },
-  
+
   onLoad() {
     // 实际开发可从 localStorage 读取历史记录
     // const history = uni.getStorageSync('searchHistory');
     // if (history) this.searchHistory = history;
-	   this.handleSearchHistory();
+    this.handleSearchHistory();
   }
 
 }
 </script>
 
 <style lang="scss">
-
-
 .sort-bar {
   display: flex;
   background-color: #fff;
